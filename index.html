@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¿Quieres ser mi San Valentín?</title>
+  <!-- Fuentes elegantes -->
+  <link href="https://fonts.googleapis.com/css?family=Dancing+Script|Montserrat:400,700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset de estilos */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Contenedor para los corazones animados */
+    #hearts-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    /* Corazón definido con CSS */
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      transform: rotate(-45deg);
+      animation: float linear;
+    }
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ff6f61;
+      border-radius: 50%;
+    }
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+    .heart::after {
+      left: 10px;
+      top: 0;
+    }
+    /* Animación: de abajo hacia arriba */
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(-45deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(-45deg);
+        opacity: 0;
+      }
+    }
+    /* Modal centrado */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 40px;
+      border-radius: 15px;
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+    .modal h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 48px;
+      color: #d6336c;
+      margin-bottom: 20px;
+    }
+    .modal p {
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      text-align: left;
+    }
+    .btn {
+      padding: 12px 24px;
+      margin: 10px;
+      border: none;
+      border-radius: 30px;
+      background-color: #ff6f61;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .btn:hover {
+      background-color: #ff3b2f;
+    }
+    /* Botón "No" se moverá de forma aleatoria */
+    #noBtn {
+      position: relative;
+    }
+    /* Estilos para la "X" de cierre */
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #aaa;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #000;
+    }
+    /* Media Queries para dispositivos móviles */
+    @media (max-width: 600px) {
+      .modal-content {
+        padding: 20px;
+      }
+      .modal h1 {
+        font-size: 36px;
+      }
+      .modal p {
+        font-size: 16px;
+      }
+      .btn {
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Fondo animado de corazones -->
+  <div id="hearts-container"></div>
+
+  <!-- Modal con la pregunta centrada -->
+  <div class="modal" id="questionModal">
+    <div class="modal-content">
+      <h1>¿Quieres ser mi San Valentín?</h1>
+      <p>He preparado algo muy especial para ti...</p>
+      <div>
+        <button id="yesBtn" class="btn">Sí</button>
+        <button id="noBtn" class="btn">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Librería para fuegos artificiales -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    // Función para generar corazones que salen de la parte inferior y flotan hacia arriba
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      // Tamaño aleatorio entre 10px y 30px
+      const size = Math.random() * 20 + 10;
+      heart.style.width = size + 'px';
+      heart.style.height = size + 'px';
+      // Posición horizontal aleatoria
+      heart.style.left = Math.random() * 100 + '%';
+      // Posición vertical inicial: desde la parte inferior
+      heart.style.top = "100%";
+      // Duración de la animación entre 5 y 10 segundos
+      const duration = Math.random() * 5 + 5;
+      heart.style.animationDuration = duration + 's';
+      heart.style.opacity = Math.random();
+      // Opcional: variar el color del corazón
+      const colors = ['#ff6f61', '#ff8a80', '#ff5252', '#ff4081'];
+      heart.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      
+      document.getElementById('hearts-container').appendChild(heart);
+      
+      // Eliminar el corazón al finalizar la animación
+      setTimeout(() => {
+        heart.remove();
+      }, duration * 1000);
+    }
+    
+    // Crear un corazón cada 300ms
+    setInterval(createHeart, 300);
+
+    // Elementos del DOM para el modal y botones
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const questionModal = document.getElementById('questionModal');
+
+    // Efecto: mover el botón "No" al pasar el ratón por encima
+    noBtn.addEventListener('mouseover', function() {
+      const modalContent = document.querySelector('.modal-content');
+      const rect = modalContent.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+      
+      // Calcular el máximo espacio disponible dentro del modal
+      const maxX = rect.width - btnRect.width;
+      const maxY = rect.height - btnRect.height;
+      
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
+      
+      noBtn.style.position = 'absolute';
+      noBtn.style.left = randomX + 'px';
+      noBtn.style.top = randomY + 'px';
+    });
+
+    // Al hacer clic en "Sí"
+    yesBtn.addEventListener('click', function() {
+      // Efecto de fuegos artificiales
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      setTimeout(() => {
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }, 300);
+
+      // Cambiar el contenido del modal a una carta de agradecimiento con botón de cierre ("X")
+      setTimeout(() => {
+        questionModal.innerHTML = `
+          <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <h1>¡Gracias, mi amor!</h1>
+            <p>
+              Mi amor, <br><br>
+              No existen palabras suficientes para agradecerte por estos 2 años y 1 mes que hemos compartido. Cada día a tu lado es un regalo y un aprendizaje. Tu amor, tu sonrisa y tu apoyo incondicional hacen que mi vida sea única y especial. <br><br>
+              Gracias por ser mi compañera, mi confidente y la inspiración que me impulsa a ser mejor, <strong>y por aceptar ser mi San Valentín</strong>. Juntos hemos construido recuerdos inolvidables y sé que aún nos esperan muchos momentos maravillosos. <br><br>
+              Te amo con todo mi corazón y siempre estaré agradecido por el camino que recorremos juntos.
+            </p>
+            <p style="text-align: right; font-style: italic;">Con todo mi amor, Tu Gordito</p>
+          </div>
+        `;
+
+        // Agregar evento para la "X" de cierre de la carta
+        const closeModal = document.getElementById('closeModal');
+        closeModal.addEventListener('click', function() {
+          // Al hacer clic en la "X", mostrar la foto y reproducir la canción
+          questionModal.innerHTML = `
+            <div class="modal-content">
+              <span id="closePhoto" class="close">&times;</span>
+              <img src="nosotros.jpg" alt="Nosotros" style="max-width:100%; border-radius:10px; margin-bottom:20px;" />
+              <audio src="perfect.mp3" autoplay></audio>
+            </div>
+          `;
+          // Agregar evento para cerrar la imagen (si se desea)
+          const closePhoto = document.getElementById('closePhoto');
+          closePhoto.addEventListener('click', function() {
+            questionModal.style.display = 'none';
+          });
+        });
+      }, 600);
+    });
+  </script>
+</body>
+</html>
